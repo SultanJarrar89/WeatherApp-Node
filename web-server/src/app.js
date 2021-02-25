@@ -38,6 +38,12 @@ app.get('/help', (req, res) => {
   })
 })
 
+app.get('*', (req, res) => {
+  res.render('404', {
+    errMsg: '404 page',
+  })
+})
+
 app.listen(5000, () => {
   console.log('server started')
 })
