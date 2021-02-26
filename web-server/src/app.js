@@ -38,23 +38,32 @@ app.get('/help', (req, res) => {
   })
 })
 app.get('/weather', (req, res) => {
-  let address = req.query.address
-  if (!address) {
+  if (!req.query.address) {
     return res.send({
-      err: 'You must Provide an address ',
+      error: 'You must provide an address!',
     })
   }
-  geocode(address, (err, { latitude, longitude, location } = {}) => {
-    if (err) return res.send({ err })
-    forecast(latitude, longitude, (err, forecastData) => {
-      if (err) return res.send({ err })
-      res.send({
-        forecast: forecastData.weatherDescriptions,
-        location,
-        rainChance: forecastDataweatherPrecip,
+
+  geocode(
+    req.query.address,
+    (error, { latitude, longitude, location } = {}) => {
+      if (error) {
+        return res.send({ error })
+      }
+
+      forecast(latitude, longitude, (error, forecastData) => {
+        if (error) {
+          return res.send({ error })
+        }
+
+        res.send({
+          forecast: forecastData,
+          location,
+          address: req.query.address,
+        })
       })
-    })
-  })
+    }
+  )
 })
 
 app.get('*', (req, res) => {
